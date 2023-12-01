@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using TMPro;
-
+using UnityEngine.Networking;
+using System.Collections;
 
 public class Board : MonoBehaviour
 {
+
 
     public Menu menu;
     public TextMeshProUGUI linesCountText;
@@ -80,6 +82,7 @@ public class Board : MonoBehaviour
         menu.loadGameOver();
 
         // Do anything else you want on game over here..
+        StartCoroutine(PostResults());
     }
 
     public void Set(Piece piece)
@@ -210,4 +213,44 @@ public class Board : MonoBehaviour
         }
     }
 
+
+    public IEnumerator PostResults()
+    {
+        Debug.Log("posting results");
+
+        string api = "https://pwpawoqa3p63hwi9un57qb2wz.monou.gg/api/tournament/match/decision/round-robin/";
+
+
+        WWWForm form = new WWWForm();
+        form.AddField("place", 99);
+        form.AddField("team_id", Linker.m_myId);
+        form.AddField("round", Linker.round);
+        form.AddField("tournament_id", Linker.m_tournamentIdNumber);
+        form.AddField("kills", scoreCount);
+        form.AddField("deaths", 0);
+        form.AddField("assistence", 0);
+
+        Debug.Log("rondaaaa " + Linker.round);
+
+        UnityWebRequest www = UnityWebRequest.Post(api, form);
+
+        Debug.Log("POSTING RESULTS API " + api);
+
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error);
+            Debug.Log(www.downloadHandler.text);
+        }
+        else
+        {
+            Debug.Log("get Success");
+            Debug.Log(www.downloadHandler.text);
+            //Debug.Log(www.downloadHandler.text);
+            //ReadJson(www.downloadHandler.text);
+            /*username = _username.text;
+            SceneManager.LoadScene("CustomizationScene");*/
+        }
+    }
 }
