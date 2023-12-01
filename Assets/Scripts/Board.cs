@@ -11,6 +11,7 @@ public class Board : MonoBehaviour
     public Menu menu;
     public TextMeshProUGUI linesCountText;
     public TextMeshProUGUI ScoreCountText;
+    public TextMeshProUGUI sigBloqueText;
     private int linesCount;
     private int scoreCount;
     public Tilemap tilemap { get; private set; }
@@ -63,9 +64,12 @@ public class Board : MonoBehaviour
          
         TetrominoData data = tetrominoes[random];
         TetrominoData data2 = tetrominoes[randomNext];
+       
 
         activePiece.Initialize(this, spawnPosition, data);
         nextPiece.Initialize(this, offBoardPosition, data2);
+
+        
 
         SetNextPiece(nextPiece);
 
@@ -74,6 +78,10 @@ public class Board : MonoBehaviour
         } else {
             GameOver();
         }
+
+        Color temp = data2.color;
+        sigBloqueText.faceColor = temp;
+        //sigBloqueText.faceColor = new Color32(255, 128, 0, 255);
     }
 
     public void GameOver()
