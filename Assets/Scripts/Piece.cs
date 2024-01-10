@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using System.Collections;
+
 
 public class Piece : MonoBehaviour
 {
@@ -15,15 +17,29 @@ public class Piece : MonoBehaviour
     public Vector3Int position { get; private set; }
     public int rotationIndex { get; private set; }
 
-    public float stepDelay = 1f;
-    public float moveDelay = 0.1f;
-    public float lockDelay = 0.5f;
+    
+
+    [SerializeField]
+    private float decreaseStepDelayValue = 0.1f;
+    [SerializeField]
+    private float timeToChangeDifficult = 30f;
+    [SerializeField]
+    private float stepDelay = 1f;
+    [SerializeField]
+    private float moveDelay = 0.1f;
+    [SerializeField]
+    private float lockDelay = 0.5f;
 
     private float stepTime;
     private float moveTime;
     private float lockTime;
 
     public float Endtime;
+
+    private void Start()
+    {
+        StartCoroutine(IncrementDifficult());
+    }
 
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
     {
@@ -248,6 +264,15 @@ public class Piece : MonoBehaviour
             return max - (min - input) % (max - min);
         } else {
             return min + (input - min) % (max - min);
+        }
+    }
+
+   public IEnumerator IncrementDifficult()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(timeToChangeDifficult);
+            stepDelay -= decreaseStepDelayValue;
         }
     }
 

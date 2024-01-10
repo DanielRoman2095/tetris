@@ -4,10 +4,11 @@ using TMPro;
 using UnityEngine.Networking;
 using System.Collections;
 
+
 public class Board : MonoBehaviour
 {
-
-
+    [SerializeField]
+    private GameObject fade;
     public Menu menu;
     public TextMeshProUGUI linesCountText;
     public TextMeshProUGUI ScoreCountText;
@@ -87,8 +88,8 @@ public class Board : MonoBehaviour
     public void GameOver()
     {
         tilemap.ClearAllTiles();
-        menu.loadGameOver();
 
+        fade.SetActive(true);
         // Do anything else you want on game over here..
         StartCoroutine(PostResults());
     }
@@ -237,6 +238,7 @@ public class Board : MonoBehaviour
         form.AddField("kills", scoreCount);
         form.AddField("deaths", 0);
         form.AddField("assistence", 0);
+        form.AddField("published", "");
 
         Debug.Log("rondaaaa " + Linker.round);
 
@@ -260,5 +262,7 @@ public class Board : MonoBehaviour
             /*username = _username.text;
             SceneManager.LoadScene("CustomizationScene");*/
         }
+
+        menu.loadGameOver();
     }
 }
