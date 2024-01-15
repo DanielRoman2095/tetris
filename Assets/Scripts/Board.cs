@@ -238,7 +238,6 @@ public class Board : MonoBehaviour
         form.AddField("kills", scoreCount);
         form.AddField("deaths", 0);
         form.AddField("assistence", 0);
-        form.AddField("published", "");
 
         Debug.Log("rondaaaa " + Linker.round);
 
