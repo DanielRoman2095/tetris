@@ -232,7 +232,7 @@ public class Board : MonoBehaviour
 
         WWWForm form = new WWWForm();
         form.AddField("place", 99);
-        form.AddField("team_id", Linker.m_myId);
+        form.AddField("team_id", Linker.m_myTeamId);
         form.AddField("round", Linker.round);
         form.AddField("tournament_id", Linker.m_tournamentIdNumber);
         form.AddField("kills", scoreCount);
