@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using SimpleJSON;
 using TMPro;
 using System;
+using System.Linq;
 
 public class Linker : MonoBehaviour
 {
@@ -19,19 +20,22 @@ public class Linker : MonoBehaviour
     [SerializeField] GameObject _playButton;
     [SerializeField] TextMeshProUGUI _roundTournamentText;
 
-    public static string m_myId = "106";
-    private string m_tournamentId = "brick-jungle-4";
+    public static string m_myId = "";
+    private string m_tournamentId = "";
+    private string m_environment = "";
+    private static string env = "https://pwpawoqa3p63hwi9un57qb2wz";
+
     public static int m_tournamentIdNumber = 1520;
     JSONNode node;
 
     //All the info from the user and tournament is gotten from the URL, this is an example and can be used as a test, in prod the url is updates when webgl is loaded from the URL the iframe is being called
-    private string _url = "https://tetris.monou.gg/?userId=106&tournamentId=brick-jungle-4";//510, 276
+    private string _url = "https://candy.monou.gg/?userId=461&tournamentId=test-jungle-10&ambiente=https://dev-torneos-fe.monou.gg/";//510, 276
 
     void Start()
     {
         Debug.Log("VERSION 35");
         //Read the url to get the user id and tournament id
-        //_url = GetURL();
+        _url = GetURL();
         Debug.Log("URLLLLLLLLLLLL " + _url);
 
         Invoke("ReadURLInfo", 1);
@@ -45,30 +49,53 @@ public class Linker : MonoBehaviour
             return;
         }
 
-        bool isNumber = true;
+        List<string> infoUrl = new List<string>();
+        infoUrl = _url.Split('&').ToList();
 
-        m_myId = "";
-        int positionInString = _url.IndexOf('=') + 1;
-        while (isNumber)
+        for (int i = 0; i != infoUrl.Count; i++)
         {
-            m_myId += _url[positionInString];
+            Debug.Log(infoUrl[i]);
+        }
+
+        int positionInString = infoUrl[0].IndexOf('=') + 1;
+        while (infoUrl[0].Length != positionInString)
+        {
+            m_myId += infoUrl[0][positionInString];
+            positionInString++;
+        }
+
+        positionInString = infoUrl[1].IndexOf('=') + 1;
+        while (infoUrl[1].Length != positionInString)
+        {
+            m_tournamentId += infoUrl[1][positionInString];
 
             positionInString++;
-            if (!char.IsNumber(_url[positionInString]))
+        }
+
+        if (infoUrl.Count > 2)
+        {
+            positionInString = infoUrl[2].IndexOf('=') + 1;
+            while (infoUrl[2].Length != positionInString)
             {
-                isNumber = false;
+                m_environment += infoUrl[2][positionInString];
+
+                positionInString++;
+            }
+            Debug.Log("ID:" + m_myId + " tournament:" + m_tournamentId + " environment:" + m_environment);
+            switch (m_environment)
+            {
+                case "https://dev-torneos-fe.monou.gg/":
+                    env = "https://pwpawoqa3p63hwi9un57qb2wz";
+                    break;
+                case "https://stg-torneos-fe.monou.gg/":
+                    env = "https://e6e6j0v1xah51y9eec0p2f12h";
+                    break;
+                case "https://monou.gg/":
+                    env = "https://dgu2evhs9qmnap4nqu9dhmcw1";
+                    break;
             }
         }
-
-        positionInString = _url.LastIndexOf('=') + 1;
-        m_tournamentId = "";
-        while (positionInString < _url.Length)
-        {
-            m_tournamentId += _url[positionInString];
-
-            positionInString++;
-        }
-        Debug.Log("ID:" + m_myId + " tournament:" + m_tournamentId);
+        Debug.Log(env);
 
         StartCoroutine(GetTournamentId());
         Debug.Log(m_myId);
@@ -135,12 +162,16 @@ public class Linker : MonoBehaviour
         }
     }
 
+    public static string GetEnv()
+    {
+        return env;
+    }
+
     IEnumerator GetRoundsInfo() 
     {
-        //string api = "https://pwpawoqa3p63hwi9un57qb2wz.monou.gg/api/tournament/royale/rounds/" + m_tournamentIdNumber;
-        string api = "https://pwpawoqa3p63hwi9un57qb2wz.monou.gg/api/tournament/" + m_tournamentIdNumber +"/teams/?current_page=1&per_page=5";
+        string api = env + ".monou.gg/api/tournament/" + m_tournamentIdNumber +"/teams/?current_page=1&per_page=5";
         UnityWebRequest www = UnityWebRequest.Get(api);
-
+            
         yield return www.SendWebRequest();
 
         if (www.result != UnityWebRequest.Result.Success)
@@ -164,8 +195,7 @@ public class Linker : MonoBehaviour
 
     IEnumerator GetTournamentId()
     {
-        string api = "https://pwpawoqa3p63hwi9un57qb2wz.monou.gg/api/tournamentBySlug/" + m_tournamentId;
-        //string api = "https://pwpawoqa3p63hwi9un57qb2wz.monou.gg/api/tournamentBySlug/";
+        string api = env + ".monou.gg/api/tournamentBySlug/" + m_tournamentId;
         UnityWebRequest www = UnityWebRequest.Get(api);
 
 

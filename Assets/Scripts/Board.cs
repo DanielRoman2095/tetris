@@ -227,7 +227,7 @@ public class Board : MonoBehaviour
     {
         Debug.Log("posting results");
 
-        string api = "https://pwpawoqa3p63hwi9un57qb2wz.monou.gg/api/tournament/match/decision/round-robin/";
+        string api = Linker.GetEnv() + ".monou.gg/api/tournament/match/decision/round-robin/";
 
 
         WWWForm form = new WWWForm();
