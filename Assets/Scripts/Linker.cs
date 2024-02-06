@@ -15,26 +15,33 @@ public class Linker : MonoBehaviour
 
     public static int round = 1;
 
+    [SerializeField] ChangeColorButton playbutton;
     [SerializeField] GameObject _startGamneButton;
     [SerializeField] GameObject _playerFound;
     [SerializeField] GameObject _playButton;
     [SerializeField] TextMeshProUGUI _roundTournamentText;
+    [SerializeField] TextMeshProUGUI versionText;
 
     public static string m_myTeamId = "";
     public static string m_myId = "";
-    private string m_tournamentId = "";
-    private string m_environment = "";
+    private string       m_tournamentId = "";
+    private string       m_environment = "";
     private static string env = "https://pwpawoqa3p63hwi9un57qb2wz";
+    private string version = "1.42";
 
-    public static int m_tournamentIdNumber = 1520;
+
+
+    public static int m_tournamentIdNumber = 1169;
     JSONNode node;
 
     //All the info from the user and tournament is gotten from the URL, this is an example and can be used as a test, in prod the url is updates when webgl is loaded from the URL the iframe is being called
-    private string _url = "https://tetris.monou.gg/?userId=301&tournamentId=brick-jungle-5&ambiente=https://dev-torneos-fe.monou.gg/";//510, 276
+    private string _url = "https://tetris.monou.gg/?userId=9525&tournamentId=brick-jungle-challenge&ambiente=https://monou.gg/";//510, 276
 
     void Start()
     {
-        Debug.Log("VERSION 35");
+        ResetPostValues();
+        Debug.Log("VERSION " + version);
+        versionText.text = version;
         //Read the url to get the user id and tournament id
         _url = GetURL();
         Debug.Log("URLLLLLLLLLLLL " + _url);
@@ -121,7 +128,8 @@ public class Linker : MonoBehaviour
                 {    // esta inscrito y listo pa jugar
                     _playerFound.GetComponent<TextMeshProUGUI>().text = "El torneo se ha verificado puedes jugar";
                     m_myTeamId = node["data"][0][0][0]["teams"][i]["id"];
-                    _playButton.SetActive(true);
+                    //_playButton.SetActive(true);
+                    playbutton.ChangeColor();
                     break;
                 }
             }
@@ -130,7 +138,16 @@ public class Linker : MonoBehaviour
             
     }
 
-       
+   public void ResetPostValues()
+    {
+        m_myTeamId = "";
+        m_myId = "";
+        m_tournamentId = "";
+        m_environment = "";
+
+    }
+
+
 
     void ParseJson(string json)
     {
@@ -144,7 +161,8 @@ public class Linker : MonoBehaviour
         {
             for (int j = 0; j != node["data"][i/*all rounds*/]["teams"].Count; j++)
             {
-                _playButton.SetActive(true);
+                //_playButton.SetActive(true);
+                playbutton.ChangeColor();
 
                 if ((string)node["data"][i/*all rounds*/]["teams"][j/*players in round*/]["teams"]["team_id"] == m_myId)
                 {
@@ -169,7 +187,7 @@ public class Linker : MonoBehaviour
 
     IEnumerator GetRoundsInfo() 
     {
-        string api = env + ".monou.gg/api/tournament/" + m_tournamentIdNumber +"/teams/?current_page=1&per_page=5";
+        string api = env + ".monou.gg/api/tournament/" + m_tournamentIdNumber +"/teams/?current_page=1&per_page=8";
         UnityWebRequest www = UnityWebRequest.Get(api);
             
         yield return www.SendWebRequest();

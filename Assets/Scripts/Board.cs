@@ -27,6 +27,8 @@ public class Board : MonoBehaviour
     private bool once = true;
     private int random;
     private int randomNext;
+    [SerializeField]
+    private bool isDemo;
 
     public RectInt Bounds {
         get
@@ -91,7 +93,14 @@ public class Board : MonoBehaviour
 
         fade.SetActive(true);
         // Do anything else you want on game over here..
-        StartCoroutine(PostResults());
+        if (!isDemo)
+        {
+            StartCoroutine(PostResults());
+        }
+        else
+        {
+            menu.loadGameOver();
+        }
     }
 
     public void Set(Piece piece)
