@@ -264,6 +264,7 @@ public class Board : MonoBehaviour
         else
         {
             Debug.Log("get Success");
+            Singleton.instance.onlyOnce = false;
             Debug.Log(www.downloadHandler.text);
             //Debug.Log(www.downloadHandler.text);
             //ReadJson(www.downloadHandler.text);

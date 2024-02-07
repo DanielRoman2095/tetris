@@ -27,7 +27,7 @@ public class Linker : MonoBehaviour
     private string       m_tournamentId = "";
     private string       m_environment = "";
     private static string env = "https://pwpawoqa3p63hwi9un57qb2wz";
-    private string version = "1.42";
+    private string version = "1.43";
 
 
 
@@ -35,7 +35,7 @@ public class Linker : MonoBehaviour
     JSONNode node;
 
     //All the info from the user and tournament is gotten from the URL, this is an example and can be used as a test, in prod the url is updates when webgl is loaded from the URL the iframe is being called
-    private string _url = "https://tetris.monou.gg/?userId=9525&tournamentId=brick-jungle-challenge&ambiente=https://monou.gg/";//510, 276
+    private string _url = "https://tetris.monou.gg/?userId=1736&tournamentId=brick-jungle-challenge&ambiente=https://monou.gg/";//510, 276
 
     void Start()
     {
@@ -124,12 +124,17 @@ public class Linker : MonoBehaviour
                     _playerFound.GetComponent<TextMeshProUGUI>().text = "El torneo ha finalizado";
                     break;
                 }
-                else if (node["status"] == "1")
+                else if (node["status"] == "1" && Singleton.instance.onlyOnce)
                 {    // esta inscrito y listo pa jugar
                     _playerFound.GetComponent<TextMeshProUGUI>().text = "El torneo se ha verificado puedes jugar";
                     m_myTeamId = node["data"][0][0][0]["teams"][i]["id"];
                     //_playButton.SetActive(true);
                     playbutton.ChangeColor();
+                    break;
+                }
+                else
+                {
+                    _playerFound.GetComponent<TextMeshProUGUI>().text = "Solo puedes jugar una vez, gracias por participar";
                     break;
                 }
             }
