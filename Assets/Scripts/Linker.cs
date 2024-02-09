@@ -24,18 +24,19 @@ public class Linker : MonoBehaviour
 
     public static string m_myTeamId = "";
     public static string m_myId = "";
-    private string       m_tournamentId = "";
-    private string       m_environment = "";
+    private string m_tournamentId = "";
+    private string m_environment = "";
     private static string env = "https://pwpawoqa3p63hwi9un57qb2wz";
-    private string version = "1.43";
+    private string version = "1.44";
 
 
 
-    public static int m_tournamentIdNumber = 1169;
+    public static int m_tournamentIdNumber = 1593;
+    public static string m_statusTornament = "";
     JSONNode node;
 
     //All the info from the user and tournament is gotten from the URL, this is an example and can be used as a test, in prod the url is updates when webgl is loaded from the URL the iframe is being called
-    private string _url = "https://tetris.monou.gg/?userId=1736&tournamentId=brick-jungle-challenge&ambiente=https://monou.gg/";//510, 276
+    private string _url = "https://tetris.monou.gg/?userId=300&tournamentId=brick-jungle-test&ambiente=https://dev-torneos-fe.monou.gg/";//510, 276
 
     void Start()
     {
@@ -113,33 +114,48 @@ public class Linker : MonoBehaviour
     void CheckStatus(string json)
     {
         node = JSON.Parse(json);
-        
+
         for (int i = 0; i < node["data"][0][0][0]["teams"].Count; i++)
         {
-            //checa si esta inscrito
+           
             if (String.Equals(node["data"][0][0][0]["teams"][i]["creador"]["id"], m_myId))
             {
-                if (node["status"] == "2")
-                {    // esta inscrito pero finalizo el torneo
-                    _playerFound.GetComponent<TextMeshProUGUI>().text = "El torneo ha finalizado";
-                    break;
-                }
-                else if (node["status"] == "1" && Singleton.instance.onlyOnce)
-                {    // esta inscrito y listo pa jugar
-                    _playerFound.GetComponent<TextMeshProUGUI>().text = "El torneo se ha verificado puedes jugar";
-                    m_myTeamId = node["data"][0][0][0]["teams"][i]["id"];
-                    //_playButton.SetActive(true);
-                    playbutton.ChangeColor();
-                    break;
-                }
-                else
+                switch (m_statusTornament)
                 {
-                    _playerFound.GetComponent<TextMeshProUGUI>().text = "Solo puedes jugar una vez, gracias por participar";
-                    break;
+                    case "0":// no ha iniciado
+                        Debug.Log("no ha iniciado");
+                        _playerFound.GetComponent<TextMeshProUGUI>().text = "Estas inscrito pero no ha iniciado el torneo";
+                        break;
+                    case "1":// en curso
+                        if (Singleton.instance.onlyOnce)
+                        {
+                            _playerFound.GetComponent<TextMeshProUGUI>().text = "El torneo se ha verificado puedes jugar";
+                            m_myTeamId = node["data"][0][0][0]["teams"][i]["id"];
+                            playbutton.ChangeColor();
+                        }
+                        else
+                        {
+                            _playerFound.GetComponent<TextMeshProUGUI>().text = "Solo puedes jugar una vez, gracias por participar";
+                        }
+                        Debug.Log("en curso");
+                        break;
+                    case "2":// termino
+                        Debug.Log("termino");
+                        _playerFound.GetComponent<TextMeshProUGUI>().text = "El torneo ha finalizado";
+                        break;
+                    case "3":// en pausa
+                        break;
+                    case "4":// esta en preparacion 
+                        break;
                 }
+                break;
             }
-            _playerFound.GetComponent<TextMeshProUGUI>().text = "No estas incrito al torneo";
+            else { _playerFound.GetComponent<TextMeshProUGUI>().text = "No estas inscrito al torneo"; }
+
         }
+
+
+   
             
     }
 
@@ -236,6 +252,8 @@ public class Linker : MonoBehaviour
             
             JSONNode td = JSON.Parse(www.downloadHandler.text);
             m_tournamentIdNumber = td["data"][0][0][0]["tournament"]["id"];
+            m_statusTornament = td["data"][0][0][0]["tournament"]["tournament_status"];
+            Debug.Log(td["data"][0][0][0]["tournament"]["tournament_status"] + "m_statusTornament");
             StartCoroutine(GetRoundsInfo());
             
 
