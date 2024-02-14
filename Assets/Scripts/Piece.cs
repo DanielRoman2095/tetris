@@ -74,7 +74,7 @@ public class Piece : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q)) {
             audioSystem.PlayKeyPressed(KeyCode.Q);
             Rotate(-1);
-        } else if (Input.GetKeyDown(KeyCode.E)) {
+        } else if (Input.GetKeyDown(KeyCode.W)) {
             audioSystem.PlayKeyPressed(KeyCode.E);
             Rotate(1);
         }

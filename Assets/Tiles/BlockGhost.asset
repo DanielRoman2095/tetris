@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BlockGhost
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 21300000, guid: fb426831784b5b649aa0c5928cd93ff5, type: 3}
-  m_Color: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 1}
+  m_Color: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 0.14901961}
   m_Transform:
     e00: 1
     e01: 0

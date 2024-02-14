@@ -7,17 +7,21 @@ using System.Collections;
 
 public class Board : MonoBehaviour
 {
+    public AudioSystem audioSystem;
+
     [SerializeField]
     private GameObject fade;
     public Menu menu;
     public TextMeshProUGUI linesCountText;
     public TextMeshProUGUI ScoreCountText;
     public TextMeshProUGUI sigBloqueText;
+
     private int linesCount;
     private int scoreCount;
     public Tilemap tilemap { get; private set; }
     public Piece activePiece { get; private set; }
     public NextPiece nextPiece;
+    public int scorePerLine;
 
     public TetrominoData[] tetrominoes;
     public Vector2Int boardSize = new Vector2Int(10, 20);
@@ -29,6 +33,7 @@ public class Board : MonoBehaviour
     private int randomNext;
     [SerializeField]
     private bool isDemo;
+
 
     public RectInt Bounds {
         get
@@ -165,14 +170,16 @@ public class Board : MonoBehaviour
     {
         RectInt bounds = Bounds;
         int row = bounds.yMin;
-
+        int multiplier = 0;
         // Clear from bottom to top
         while (row < bounds.yMax)
         {
+           
             // Only advance to the next row if the current is not cleared
             // because the tiles above will fall down when a row is cleared
             if (IsLineFull(row)) {
-                LineClear(row);
+                multiplier++;
+                LineClear(row, multiplier);
             } else {
                 row++;
             }
@@ -193,19 +200,16 @@ public class Board : MonoBehaviour
             }
         }
 
-        scoreCount += 150;
-
-        linesCount++;
-
-        linesCountText.text = linesCount.ToString();
-
-        ScoreCountText.text = scoreCount.ToString();
+        
 
         return true;
     }
 
-    public void LineClear(int row)
+    public void LineClear(int row, int multiplier)
     {
+        //Plays Audio to give feedback 
+        audioSystem.PlayClearLine();
+
         RectInt bounds = Bounds;
 
         // Clear all tiles in the row
@@ -229,6 +233,14 @@ public class Board : MonoBehaviour
 
             row++;
         }
+
+        Debug.Log(multiplier);
+        //Add score
+        scorePerLine *= multiplier;
+        scoreCount += scorePerLine;
+        linesCount++;
+        linesCountText.text = linesCount.ToString();
+        ScoreCountText.text = scoreCount.ToString();
     }
 
 

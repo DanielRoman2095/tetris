@@ -15,6 +15,8 @@ public class AudioSystem : MonoBehaviour
     public AudioClip switchToggle;
     public AudioClip buttonClick;
 
+    public AudioClip lineclearclip;
+
     public AudioSource gameMusic;
 
     public AudioClip pauseMenuUI;
@@ -37,6 +39,12 @@ public class AudioSystem : MonoBehaviour
         int randomIndex = Random.Range(0, 2);
         AudioClip[] clips = { keyPress1, keyPress2, keyPress3 };
         player.PlayOneShot(clips[randomIndex]);
+    }
+
+    public void PlayClearLine()
+    {
+        player.PlayOneShot(lineclearclip);
+
     }
     public void PlaySwitchToggle()
     {
