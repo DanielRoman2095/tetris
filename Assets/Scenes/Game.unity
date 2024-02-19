@@ -4016,6 +4016,8 @@ MonoBehaviour:
   sigBloqueText: {fileID: 45050130}
   nextPiece: {fileID: 746982956}
   scorePerLine: 150
+  spriteSolid: {fileID: 21300000, guid: adcb31c78efd74d499a95c353e6413f8, type: 3}
+  spriteNormal: {fileID: 21300000, guid: fb426831784b5b649aa0c5928cd93ff5, type: 3}
   tetrominoes:
   - tile: {fileID: 11400000, guid: 080a502ae51379b4c9c500399016154b, type: 2}
     tetromino: 0
