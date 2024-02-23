@@ -7,6 +7,7 @@ public class AudioSystem : MonoBehaviour
 {
     public AudioSource player;
 
+
     public AudioClip keyPress1;
     public AudioClip keyPress2;
     public AudioClip keyPress3;
@@ -21,38 +22,34 @@ public class AudioSystem : MonoBehaviour
 
     public AudioClip pauseMenuUI;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        if(SceneManager.GetActiveScene().name == "Game")
-        {
-            PlayGameMusic();
-        }
-    }
+    [SerializeField]
+    bool isMute;
+
     public void PlayKeyPressed(KeyCode keyPressed)
     {
-        if(keyPressed == KeyCode.Space)
+        if(keyPressed == KeyCode.Space  )
         {
-            player.PlayOneShot(keyPressSpace);
+            if (!isMute) player.PlayOneShot(keyPressSpace);
+            
             return;
         }
         int randomIndex = Random.Range(0, 2);
         AudioClip[] clips = { keyPress1, keyPress2, keyPress3 };
-        player.PlayOneShot(clips[randomIndex]);
+        if( !isMute) player.PlayOneShot(clips[randomIndex]);
     }
 
     public void PlayClearLine()
     {
-        player.PlayOneShot(lineclearclip);
+        if (!isMute) player.PlayOneShot(lineclearclip);
 
     }
     public void PlaySwitchToggle()
     {
-        player.PlayOneShot(switchToggle);
+        if (!isMute) player.PlayOneShot(switchToggle);
     }
     public void PlayButtonClick()
     {
-        player.PlayOneShot(buttonClick);
+        if (!isMute) player.PlayOneShot(buttonClick);
     }
     public bool IsAudioRunning()
     {
@@ -65,23 +62,20 @@ public class AudioSystem : MonoBehaviour
             return false;
         }
     }
-    public void PlayGameMusic()
-    {
-
-    }
+   
     public void PlayPauseMenu()
     {
-        player.PlayOneShot(pauseMenuUI);
+        if (!isMute) player.PlayOneShot(pauseMenuUI);
 
     }
-    public void SetGameMusicVolume(float volume)
+  
+
+
+    public void ToggleMute()
     {
-        gameMusic.volume = volume;
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
+      player.mute = isMute;
+      gameMusic.mute = isMute;
+      isMute = !isMute;
     }
 
 }

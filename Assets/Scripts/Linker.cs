@@ -15,7 +15,8 @@ public class Linker : MonoBehaviour
 
     public static int round = 1;
 
-    [SerializeField] ChangeColorButton playbutton;
+    
+    [SerializeField] GameObject _demoGamneButton;
     [SerializeField] GameObject _startGamneButton;
     [SerializeField] GameObject _playerFound;
     [SerializeField] GameObject _playButton;
@@ -27,7 +28,7 @@ public class Linker : MonoBehaviour
     private string m_tournamentId = "";
     private string m_environment = "";
     private static string env = "https://pwpawoqa3p63hwi9un57qb2wz";
-    private string version = "1.46";
+    private string version = "1.47";
 
 
 
@@ -36,7 +37,7 @@ public class Linker : MonoBehaviour
     JSONNode node;
 
     //All the info from the user and tournament is gotten from the URL, this is an example and can be used as a test, in prod the url is updates when webgl is loaded from the URL the iframe is being called
-    private string _url = "https://tetris.monou.gg/?userId=300&tournamentId=brick-jungle-test&ambiente=https://dev-torneos-fe.monou.gg/";//510, 276
+    private string _url = "https://tetris.monou.gg/?userId=307&tournamentId=brick-jungle-v1&ambiente=https://dev-torneos-fe.monou.gg/";//510, 276
 
     void Start()
     {
@@ -44,7 +45,17 @@ public class Linker : MonoBehaviour
         Debug.Log("VERSION " + version);
         versionText.text = version;
         //Read the url to get the user id and tournament id
-        _url = GetURL();
+
+        try
+        {
+            _url = GetURL();
+        }
+        catch(Exception ex)
+        {
+            Debug.LogException(ex, this);
+            _playerFound.GetComponent<TextMeshProUGUI>().text = "¡Error! Consulta al staff de Monou";
+        }
+        
         Debug.Log("URLLLLLLLLLLLL " + _url);
 
         Invoke("ReadURLInfo", 1);
@@ -124,24 +135,25 @@ public class Linker : MonoBehaviour
                 {
                     case "0":// no ha iniciado
                         Debug.Log("no ha iniciado");
-                        _playerFound.GetComponent<TextMeshProUGUI>().text = "Estas inscrito pero no ha iniciado el torneo";
+                        _playerFound.GetComponent<TextMeshProUGUI>().text = "Estas inscrito pero todavia no inicia el torneo";
                         break;
                     case "1":// en curso
                         if (Singleton.instance.onlyOnce)
                         {
-                            _playerFound.GetComponent<TextMeshProUGUI>().text = "El torneo se ha verificado puedes jugar";
+                            _playerFound.GetComponent<TextMeshProUGUI>().text = "¿Estás listo?";
                             m_myTeamId = node["data"][0][0][0]["teams"][i]["id"];
-                            playbutton.ChangeColor();
+                            _startGamneButton.SetActive(true);
+                            _demoGamneButton.SetActive(false);
                         }
                         else
                         {
-                            _playerFound.GetComponent<TextMeshProUGUI>().text = "Solo puedes jugar una vez, gracias por participar";
+                            _playerFound.GetComponent<TextMeshProUGUI>().text = "Solo puedes jugar una vez, ¡gracias por participar!";
                         }
                         Debug.Log("en curso");
                         break;
                     case "2":// termino
                         Debug.Log("termino");
-                        _playerFound.GetComponent<TextMeshProUGUI>().text = "El torneo ha finalizado";
+                        _playerFound.GetComponent<TextMeshProUGUI>().text = "¡El torneo ha finalizado!";
                         break;
                     case "3":// en pausa
                         break;
@@ -150,7 +162,7 @@ public class Linker : MonoBehaviour
                 }
                 break;
             }
-            else { _playerFound.GetComponent<TextMeshProUGUI>().text = "No estas inscrito al torneo"; }
+            else { _playerFound.GetComponent<TextMeshProUGUI>().text = "¡Aún no estás inscrito a este torneo!"; }
 
         }
 
@@ -182,8 +194,9 @@ public class Linker : MonoBehaviour
         {
             for (int j = 0; j != node["data"][i/*all rounds*/]["teams"].Count; j++)
             {
-                //_playButton.SetActive(true);
-                playbutton.ChangeColor();
+                //_startGamneButton.SetActive(true);
+                //_demoGamneButton.SetActive(false);
+                ////playbutton.ChangeColor();
 
                 if ((string)node["data"][i/*all rounds*/]["teams"][j/*players in round*/]["teams"]["team_id"] == m_myId)
                 {

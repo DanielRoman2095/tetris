@@ -22,6 +22,7 @@ public class Board : MonoBehaviour
     public Piece activePiece { get; private set; }
     public NextPiece nextPiece;
     public int scorePerLine;
+    private int tempScorePerLine;
 
     public TetrominoData[] tetrominoes;
     public Vector2Int boardSize = new Vector2Int(10, 20);
@@ -56,6 +57,7 @@ public class Board : MonoBehaviour
     private void Start()
     {
         SpawnPiece();
+        tempScorePerLine = scorePerLine;
     }
 
     public void SpawnPiece()
@@ -238,9 +240,12 @@ public class Board : MonoBehaviour
         //Add score
         scorePerLine *= multiplier;
         scoreCount += scorePerLine;
+        
         linesCount++;
         linesCountText.text = linesCount.ToString();
         ScoreCountText.text = scoreCount.ToString();
+
+        scorePerLine = tempScorePerLine;
     }
 
 
