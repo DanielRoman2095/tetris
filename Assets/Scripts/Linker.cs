@@ -28,7 +28,7 @@ public class Linker : MonoBehaviour
     private string m_tournamentId = "";
     private string m_environment = "";
     private static string env = "https://pwpawoqa3p63hwi9un57qb2wz";
-    private string version = "1.47";
+    private string version = "1.48";
 
 
 
